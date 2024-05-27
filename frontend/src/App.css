@@ -1,0 +1,15 @@
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+.nav{
+    height: 35px;
+}
+.navLink{
+    font-weight: 500    ;
+}
+.projectlist{
+    font-weight:lighter;
+}
