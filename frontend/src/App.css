@@ -13,3 +13,16 @@ html, body, #root {
 .projectlist{
     font-weight:lighter;
 }
+
+@media (max-width: 600px) {
+    .hidden-xs {
+      display: none;
+    }
+  }
+.projectInfo{
+  width: 60%;
+}
+
+.sidebar{
+  width: 15%;
+}

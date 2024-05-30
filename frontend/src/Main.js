@@ -1,64 +1,85 @@
 import React from "react";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
+import { useState } from "react";
+import Modal from "react-modal" ; 
+import ProjectGrid from "./ProjectGrid";
 
-import { ImBlocked } from "react-icons/im";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { GoCheck } from "react-icons/go";
+
+import { FaPlus } from "react-icons/fa";
 
 
 export default function Main(){
 
+
+
+
+  const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      width: '30%', // Custom width
+      height: '50%' // Custom height
+    },
+    overlay: {
+      backgroundColor: 'rgba(0, 0, 0, 0.75)' // Optional: dim the background
+    }
+  };
+  const [modal, setModal] = useState(false) ; 
+
+  function toggleModal(){
+    setModal(!modal) ; 
+} 
     return (
-        <div className="flex flex-col h-full ">
+    <div className="flex flex-col h-full ">
         <Navbar items={["profile" , "About"]}/>
+        
 
-        <div className="mainpage flex flex-row font-mono ">
-      <div className="w-1/5 ">
-        <Sidebar />
-      </div>
-      <div className="flex-grow p-5 grid grid-cols-3 gap-10 bg-slate-100">
-        {/* First row */}
-        <div className="bg-slate-200 p-4 font-bold flex justify-center  items-center text-center "> <div className="text-center">Bolcked</div>   <ImBlocked style={{ color: "red", marginLeft: "10px",fontSize: "20px" }}/></div>
 
-        <div className="bg-slate-200 p-4 font-bold flex justify-center items-center text-center"> <div>In progress</div><AiOutlineLoading3Quarters style={{ color: "yellow", marginLeft: "10px", fontSize: "24px" }}/> </div>
+      <div className="mainpage flex flex-row font-mono ">
 
-        <div className="bg-slate-200 p-4 font-bold flex justify-center items-center text-center"> <div>Done</div><GoCheck style={{ color: "green", marginLeft: "10px", fontSize: "24px" }}/></div>
-
-        {/* Second row */}
-        <div className="h-48 bg-slate-200 p-4 flex flex-col  shadow-xl  rounded-xl">
-
-            <div>
-                Project name
+        <div className="w-1/5 hidden sm:block"><Sidebar  /></div>
+        <div className="w-full sm:w-4/5 flex-grow  bg-slate-100" >
+            <div className="flex flex-row justify-between my-5 mx-3">
+              <div className="font-Play font-bold text-xl">Projects</div>
+              <button className=" text-black flex justify-between items-center text-center border-2 border-slate-400 rounded-lg p-1"
+                  onClick={toggleModal}>Add a project <FaPlus style={{color:"#333"}}/></button>
             </div>
-            <div>
-                Priority
-            </div>
-            <div>
-                created at
-            </div>
-            <div>
-                task number
-            </div>
-            <div>
-                Add task
-            </div>
-
+          <ProjectGrid />  
         </div>
-        <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">05</div>
-        <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">06</div>
-        <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">07</div>
-        <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">08</div>
-        <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">09</div>
-        <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">04</div>
-        <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">05</div>
-        <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">06</div>
-        <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">07</div>
-        <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">08</div>
-        <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">09</div>
+        
+          
       </div>
-      </div>
+      
 
+
+      
+      <Modal isOpen={modal} onRequestClose={() => setModal(false)} style={customStyles}>
+        <div div className="text-center font-mono ">
+          <div className="text-2xl">Add a new project</div>
+          <form className="flex flex-col">
+            <div>
+              <label for= "projectName">Project name :</label>
+              <input placeholder="Project Name" className="border-2 ml-10 mt-5 border-gray-400"></input>
+            </div>
+            <div>
+              <label for= "priority">Priority :</label>
+              <select className="ml-10 mt-5">
+                <option>Normal</option>
+                <option>Medium</option>
+                <option>High </option>
+              </select>
+            </div>
+            
+          </form>
+        </div>
+        
+        
+      </Modal>
     </div>
   );
 

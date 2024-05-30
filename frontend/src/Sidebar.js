@@ -1,10 +1,11 @@
 import React from "react";
-import { IoIosArrowForward } from "react-icons/io";
+
 
 export default function Sidebar(){
 
+
     return(
-        <div className="sidebar bg-slate-200 h-screen pl-3 pt-3 fixed w-1/5">
+        <div className="w-1/5 bg-slate-200 h-screen pl-3 pt-3 fixed ">
             
             <div className="font-mono  p-0 ">
                 <div className="font-extrabold">Projects {'>'} </div> 
@@ -17,6 +18,7 @@ export default function Sidebar(){
                 </ul>
             </div>
 
+            
             
         </div>
     ) 
