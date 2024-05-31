@@ -20,9 +20,18 @@ html, body, #root {
     }
   }
 .projectInfo{
-  width: 60%;
+  width: 65%;
 }
 
 .sidebar{
   width: 15%;
 }
+
+.mainTask{
+  width: 80%;
+}
+
+.mainProject{
+  width: 80%;
+}
+

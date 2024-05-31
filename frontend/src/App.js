@@ -5,6 +5,7 @@ import { BrowserRouter, Routes ,Route , Switch , useLocation } from 'react-route
 import Signup from './Signup';
 import Main from './Main';
 import SingleProject from './SingleProject';
+import SingleTask from './SingleTask';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path='/signup' element={<Signup />}/>
         <Route path='/projects' element={<Main />}/>
         <Route path='/project/:id' element={<SingleProject/>}/>
+        <Route path='/task/:id' element={<SingleTask/>}/>
       </Routes>
 
       
