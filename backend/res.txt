@@ -1,0 +1,50 @@
+users(){
+            return pool.query("select * from users;")
+            .then(res=>{ return res.rows})
+            .catch(err => {throw(err)})
+                
+        },
+        comments(){
+            return pool.query("select * from comments;")
+            .then(res=>{ return res.rows})
+            .catch(err => {throw(err)})
+                
+            
+        },
+
+        tweet(_ , args){
+            const { tweet_id, content } = args;
+            let index = 1 ; 
+            let values = [] ; 
+            let query = "select * from tweets where 1=1 "
+            if(tweet_id) {
+                query+=` AND tweet_id = $${index++} `
+                values.push(tweet_id) ;
+            }
+            if(content){
+                query+= ` AND content LIKE $${index++} ;`
+                values.push("%"+content+"%") ; 
+            }
+
+            
+
+            return pool.query(query, values)
+            .then(res=>{ return res.rows[0]})
+            .catch(err => {throw(err)})
+        },
+        comment(_ , args){
+            return pool.query("select * from comments where comment_id =$1 ;" , [parseInt(args.id)])
+            .then(res=>{ return res.rows[0]})
+            .catch(err => {throw(err)})
+        },
+        user(_ , args){
+            return pool.query("select * from users where user_id =$1 ;" , [parseInt(args.id)])
+            .then(res=>{ return res.rows[0]})
+            .catch(err => {throw(err)})
+        }
+
+select project_name, priority, projects.created_at, state, task_number, team_number, owner_id , projects.project_id 
+from users 
+join member on users.user_id = member.user_id 
+join projects on member.project_id = projects.project_id 
+where users.user_id = 3
