@@ -45,4 +45,26 @@ export const typeDefs = `#graphql
         members:[Member]
     }
 
+    type Mutation{
+        addUser(user : UserAdd):String 
+        addProject(project: ProjectAdd): String
+        addMember(member: MemberAdd) :String
+    }
+    input UserAdd{
+        email: String! ,
+        name: String!,
+        password: String!
+    }
+
+    input ProjectAdd{
+        project_name: String! ,
+        priority: String!,
+        owner_id: ID!
+    }
+    input MemberAdd{
+        user_id: ID!,
+        project_id : ID!,
+        role: String!
+    }
+
 `
