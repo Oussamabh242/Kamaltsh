@@ -26,7 +26,7 @@ export default function Login(){
         query: print(LOGIN_MUTATION),
         variables,
       })
-      .then(res =>{console.log(res.data)}) 
+      .then(res =>{localStorage.setItem('jwt',res.data.data.login)}) 
       .catch(err=>console.error(err)) ;
     }
       return (

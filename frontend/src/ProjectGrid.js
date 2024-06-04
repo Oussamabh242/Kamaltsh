@@ -1,14 +1,61 @@
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { print } from 'graphql';
+import gql from 'graphql-tag';
+
 
 import { ImBlocked } from "react-icons/im";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { GoCheck } from "react-icons/go";
 import { FaPen } from "react-icons/fa";
 import { IoTrashBinSharp } from "react-icons/io5";
+import { useEffect, useState } from "react";
 
 
 export default function ProjectGrid(props){
-    console.log(props)
+    const [data ,setData] = useState({}) ; 
+    const [loading, setLoading] = useState(true);
+    
+    const graphqlEndpoint = 'http://localhost:5000/graphql';
+    const PROJECTS_QUERY = gql`query Projects {
+  
+        projects {
+          project_name,
+          project_id,
+          priority,
+          state ,
+          created_at, 
+          team_number,
+          task_number
+        }
+      }`;
+
+    useEffect(()=>{
+        axios.post(graphqlEndpoint, {
+            query: print(PROJECTS_QUERY),
+            
+        },
+        {
+            headers:{
+                "x-auth-token" : localStorage.getItem("jwt")
+            }
+        }
+        )
+        .then(res =>{setData(res.data.data) ; setLoading(false);}) 
+        .catch(err=>console.error(err)) ;
+    },[]);
+
+    
+  if (loading) {
+    return <p>Loading...</p>; // Display a loading message or spinner
+  }
+
+  if (!data || !data.projects) {
+    return <p>No projects found.</p>; // Handle the case where no data is returned
+  }
+    
+    if(!data){return <p>loading ...</p>}
+
     return (
         <div className="flex-grow p-5 grid grid-cols-3 gap-10 ">
             {/* First row */}
@@ -18,20 +65,20 @@ export default function ProjectGrid(props){
 
             <div className="bg-slate-200 p-4 font-bold flex justify-center items-center text-center"> <div>Done</div><GoCheck style={{ color: "green", marginLeft: "10px", fontSize: "24px" }}/></div>
 
-            {/* Second row */}
-            <Link to="/project/2" className="h-48 bg-slate-200 p-4 flex flex-col  shadow-xl  rounded-xl">
+            {data.projects.map((project)=>
+                <Link to={`/project/${project.project_id}`} className="h-48 bg-slate-200 p-4 flex flex-col  shadow-xl  rounded-xl">
 
                 <div>
-                    Project name
+                    {project.project_name}
                 </div>
                 <div>
-                    Priority
+                    {project.priority}
                 </div>
                 <div>
-                    created at
+                    {project.created_at}
                 </div>
                 <div>
-                    task number
+                    {project.task_number}
                 </div>
                 <div>
                     Add task
@@ -44,43 +91,10 @@ export default function ProjectGrid(props){
 
                 
                 
-            </Link>
-            <div className="h-48 bg-slate-200 p-4 flex flex-col  shadow-xl  rounded-xl">
-
-                <div>
-                    Project name
-                </div>
-                <div>
-                    Priority
-                </div>
-                <div>
-                    created at
-                </div>
-                <div>
-                    task number
-                </div>
-                <div>
-                    Add task
-                </div>
-                <div className="flex flex-row justify-end gap-4">
-                  <div className=" " onClick={()=>{props.callback(!props.modal)}}><FaPen/></div>
-                  <div className=" "><IoTrashBinSharp/></div>
-                  <div><GoCheck style={{  fontSize: "24px" }}/></div>
-                </div>
-
-                
-                
-            </div>
-            <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">06</div>
-            <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">07</div>
-            <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">08</div>
-            <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">09</div>
-            <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">04</div>
-            <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">05</div>
-            <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">06</div>
-            <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">07</div>
-            <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">08</div>
-            <div className="h-48 bg-slate-200 p-4 shadow-xl  rounded-xl">09</div>
+                </Link>
+            )}
+            
+            
         </div>
     )
 }

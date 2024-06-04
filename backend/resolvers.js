@@ -1,5 +1,7 @@
 import pool from "./_db.js"
 import expressSession from "./index.js";
+import jsonWebToken from 'jsonwebtoken' ; 
+const jwt = jsonWebToken ; 
 export const resolvers = {
     Query : {
         users(){
@@ -8,8 +10,14 @@ export const resolvers = {
             .catch(err => {throw(err)})
                 
         },
-        projects(){
-            return pool.query("select * from projects ;")
+        projects(_, args , context){
+            console.log("reached")
+            console.log(context) ; 
+            return pool.query(`select project_name, priority, projects.created_at, state, task_number, team_number, owner_id , projects.project_id 
+            from users 
+            join member on users.user_id = member.user_id 
+            join projects on member.project_id = projects.project_id 
+            where users.user_id =$1`,[context.user_id])
             .then(res=>{ return res.rows})
             .catch(err => {throw(err)})
                 
@@ -46,7 +54,7 @@ export const resolvers = {
         project(_,args){
             return pool.query("select * from projects where project_id =$1 ;", [parseInt(args.project_id)])
             .then(res=>{ return res.rows[0]})
-            .catch(err => {throw(err)})
+            .catch(elrr => {throw(err)})
         },
         task(_ ,args){
             return pool.query("select * from tasks where task_id =$1 ;", [parseInt(args.task_id)])
@@ -98,11 +106,7 @@ export const resolvers = {
             .then(res=>{return res.command+"D "+res.rowCount+" rows."})
             .catch(err => {throw(err)});
         },
-        addProject(_,args , {req}){
-            console.log(req) ; 
-            if (!req.session.user) {
-                return "you are not logged in";
-              }
+        addProject(_,args , {context}){
 
             const project = {
                 ...args.project
@@ -121,8 +125,8 @@ export const resolvers = {
         },
         login(_,args , {req}){
 
-            if (req.session.user) {
-                return "You are already logged in. Cannot add user.";
+            if (req.get('x-auth-token')) {
+                return "You are already logged in.";
               }
             const user = {
                 ...args.user
@@ -131,9 +135,8 @@ export const resolvers = {
             return pool.query("select * from users where email = $1 and password = $2 ; " , [user.email,user.password]) 
             .then(res=>{
                 if (res.rowCount ===1){
-                    req.session.user = res.rows[0].user_id ;
-                    console.log(req.session.user) ; 
-                    return "logged in"; 
+                    const token = jwt.sign({user_id : res.rows[0].user_id} ,"oussama.bh" , { expiresIn: '50h' });
+                    return token ; 
                 }
                 return "get the hell outaa here" ; 
             })
