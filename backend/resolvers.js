@@ -1,4 +1,5 @@
 import pool from "./_db.js"
+import expressSession from "./index.js";
 export const resolvers = {
     Query : {
         users(){
@@ -97,11 +98,16 @@ export const resolvers = {
             .then(res=>{return res.command+"D "+res.rowCount+" rows."})
             .catch(err => {throw(err)});
         },
-        addProject(_,args){
+        addProject(_,args , {req}){
+            console.log(req) ; 
+            if (!req.session.user) {
+                return "you are not logged in";
+              }
+
             const project = {
                 ...args.project
             }
-            return pool.query("INSERT INTO projects(project_name , priority , owner_id) values($1,$2,$3)" , [project.project_name ,project.priority , parseInt(project.owner_id)]) 
+            return pool.query("INSERT INTO projects(project_name , priority , owner_id) values($1,$2,$3)" , [project.project_name ,project.priority , parseInt(req.session.user)]) 
             .then(res=>{return res.command+"D "+res.rowCount+" rows."})
             .catch(err => {throw(err)});
         },
@@ -111,6 +117,26 @@ export const resolvers = {
             }
             return pool.query("INSERT INTO member(user_id , project_id , role) values($1,$2,$3)" , [parseInt(member.user_id ),parseInt(member.project_id) , member.role]) 
             .then(res=>{return res.command+"D "+res.rowCount+" rows."})
+            .catch(err => {throw(err)});
+        },
+        login(_,args , {req}){
+
+            if (req.session.user) {
+                return "You are already logged in. Cannot add user.";
+              }
+            const user = {
+                ...args.user
+            };
+
+            return pool.query("select * from users where email = $1 and password = $2 ; " , [user.email,user.password]) 
+            .then(res=>{
+                if (res.rowCount ===1){
+                    req.session.user = res.rows[0].user_id ;
+                    console.log(req.session.user) ; 
+                    return "logged in"; 
+                }
+                return "get the hell outaa here" ; 
+            })
             .catch(err => {throw(err)});
         }
     } 

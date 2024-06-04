@@ -49,6 +49,7 @@ export const typeDefs = `#graphql
         addUser(user : UserAdd):String 
         addProject(project: ProjectAdd): String
         addMember(member: MemberAdd) :String
+        login(user : UserLogin) : String
     }
     input UserAdd{
         email: String! ,
@@ -65,6 +66,10 @@ export const typeDefs = `#graphql
         user_id: ID!,
         project_id : ID!,
         role: String!
+    }
+    input UserLogin{
+        email: String!,
+        password: String! , 
     }
 
 `

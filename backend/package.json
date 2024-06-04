@@ -13,13 +13,17 @@
     "@apollo/server": "^4.10.4",
     "@apollo/subgraph": "^2.8.0",
     "apollo-server": "^3.13.0",
+    "connect-pg-simple": "^9.0.1",
     "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "express-session-passport-cleanup": "^1.0.3",
     "graphql": "^16.8.1",
     "graphql-middleware": "^6.1.35",
     "graphql-tag": "^2.12.6",
     "graphql-tools": "^9.0.1",
     "index.js": "^0.0.3",
     "nodemon": "^3.1.2",
+    "passport": "^0.7.0",
     "pg": "^8.11.5"
   },
   "type": "module"
