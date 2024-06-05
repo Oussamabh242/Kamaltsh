@@ -11,8 +11,6 @@ export const resolvers = {
                 
         },
         projects(_, args , context){
-            console.log("reached")
-            console.log(context) ; 
             return pool.query(`select project_name, priority, projects.created_at, state, task_number, team_number, owner_id , projects.project_id 
             from users 
             join member on users.user_id = member.user_id 
@@ -51,10 +49,14 @@ export const resolvers = {
             .then(res=>{ return res.rows[0]})
             .catch(err => {throw(err)})
         },
-        project(_,args){
-            return pool.query("select * from projects where project_id =$1 ;", [parseInt(args.project_id)])
+        project(_,args ,context){
+            console.log(args , context); 
+            return pool.query(`select  p.project_name, p.priority, p.created_at, p.state, p.task_number, p.team_number, p.owner_id , p.project_id from users u 
+            join member m on u.user_id = m.user_id 
+            join projects p on m.project_id=p.project_id 
+            where u.user_id =$2 and p.project_id=$1;`, [parseInt(args.project_id) , context.user_id])
             .then(res=>{ return res.rows[0]})
-            .catch(elrr => {throw(err)})
+            .catch(err => {throw(err)})
         },
         task(_ ,args){
             return pool.query("select * from tasks where task_id =$1 ;", [parseInt(args.task_id)])
@@ -123,18 +125,17 @@ export const resolvers = {
             .then(res=>{return res.command+"D "+res.rowCount+" rows."})
             .catch(err => {throw(err)});
         },
-        login(_,args , {req}){
+        login(_,args){
 
-            if (req.get('x-auth-token')) {
-                return "You are already logged in.";
-              }
+            
             const user = {
                 ...args.user
-            };
-
+            }
+            
             return pool.query("select * from users where email = $1 and password = $2 ; " , [user.email,user.password]) 
             .then(res=>{
                 if (res.rowCount ===1){
+                    console.log(res.rows) ; 
                     const token = jwt.sign({user_id : res.rows[0].user_id} ,"oussama.bh" , { expiresIn: '50h' });
                     return token ; 
                 }

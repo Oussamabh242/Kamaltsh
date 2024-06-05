@@ -23,17 +23,19 @@ const server = new ApolloServer({
     resolvers,
     
     context : async ({req})=>{
-        const token = req.get("x-auth-token") ; 
-        const payload = jwt.decode(token) ; 
-        if(!payload.user_id){
-            throw new GraphQLError('User is not authenticated', {
-                extensions: {
-                  code: 'UNAUTHENTICATED',
-                  http: { status: 401 },
-                }, 
-              });
-        }
 
+        const token = req.get("x-auth-token") ||""; 
+        const payload = jwt.decode(token) ||"" ; 
+        if(!payload){
+            // throw new GraphQLError('User is not authenticated', {
+            //     extensions: {
+            //       code: 'UNAUTHENTICATED',
+            //       http: { status: 401 },
+            //     }, 
+            //   });
+            return "not found" ; 
+        }
+        console.log(payload);
         return payload;  
     } 
     

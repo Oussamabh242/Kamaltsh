@@ -2,7 +2,6 @@
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 
-
 import { GoCheck } from "react-icons/go";
 import { FaPen } from "react-icons/fa";
 import { IoTrashBinSharp } from "react-icons/io5";
@@ -11,10 +10,61 @@ import { FaPlusCircle } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Modal from "react-modal" ; 
+import { useQuery, gql } from '@apollo/client';
+import { useParams } from 'react-router-dom';
 
+const reDate = (num)=>{
+    const date = new Date(parseInt(num)) ; 
+    const string = `${date.getDate()} / ${date.getMonth() } / ${date.getFullYear()}` ;
+    return string ; 
+}
+
+const GET_PROJECT = gql`query Project($projectId: ID!) {
+    project(project_id: $projectId) {
+      created_at
+      members {
+        user {
+          name
+        }
+        role
+      }
+      owner {
+        name
+      }
+      priority
+      project_name
+      state
+      task_number
+      team_number
+    }
+  }`;
 
 const SingleProject = () => {
+    const [modal, setModal] = useState(false) ; 
 
+    function toggleModal(){
+      setModal(!modal) ; 
+    }
+
+
+    const {id} = useParams() ; 
+    
+      const variables = {
+        "projectId" :`${id}`
+      };
+      const {loading, error ,data} = useQuery(GET_PROJECT , {
+        variables: variables,
+        context: {
+            headers: {"x-auth-token" : localStorage.getItem("jwt")}
+        }
+      }); 
+      if (loading) return null ;
+      if (error) return `Error ${error}` ;
+      const project = data.project ; 
+      const members= project.members ; 
+      members.map((member)=>{
+        console.log(member.user.name) ; 
+      })
     
     const customStyles = {
         content: {
@@ -32,11 +82,7 @@ const SingleProject = () => {
         }
       };
 
-    const [modal, setModal] = useState(false) ; 
-
-    function toggleModal(){
-      setModal(!modal) ; 
-    }
+    
 
     return ( 
     <div>
@@ -48,23 +94,23 @@ const SingleProject = () => {
             </div>
 
             <div className="mainProject font-mono bg-slate-100 flex-grow p-4">
-                <h1 className="font-Play font-bold text-xl">Project Name</h1>
+                <h1 className="font-Play font-bold text-xl">{project.project_name}</h1>
 
                 <div className='m-5 bg-slate-50 rounded-xl shadow-xl flex flex-col font-mono p-3 sm:flex-row '>
 
                     <div className='projectInfo'>
                         <div className='flex'>
-                            <h1>Priority</h1>
-                            <h1>In progress</h1>
+                            <h1 className='px-4'>{project.priority}</h1>
+                            <h1>{project.state}</h1>
                         </div>
-                        <h3 className='text-gray-400 p-2'>Created at :  21 Oct 2003</h3>
+                        <h3 className='text-gray-400 p-2'>Created at :{reDate(project.created_at)} </h3>
                         <div className='border-2 border-gray-50 p-2 rounded-md'>
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eu velit libero. Nunc ex magna, feugiat eget sollicitudin sagittis, interdum ac leo. Duis egestas posuere augue eu finibus. Nullam suscipit, mauris cursus accumsan eleifend, justo nisl fringilla ligula, non vestibulum sapien neque aliquam mi. Curabitur pretium est volutpat efficitur malesuada. Morbi non finibus tellus. In pharetra, velit vitae venenatis condimentum, lorem nulla volutpat sapien
                         </div>
                         <div className='flex gap-10 border-y-2 my-2'>
-                            <h1>Tasks : 5</h1>
+                            <h1>Tasks : {project.task_number}</h1>
                             <h1> | </h1>
-                            <h1>Team members : 10</h1>
+                            <h1>Team members : {project.team_number}</h1>
                         </div>
                         <div className='flex justify-between mt-3 mb-2'>
                             <h1 className='font-bold text-gray-800 mb-2'>Tasks </h1>
@@ -115,60 +161,28 @@ const SingleProject = () => {
                             </button>
                         </div>
                         
-                        <div className='mt-2 ml-2 flex items-center border-2 rounded-md border-gray-100 shadow-sm'>
+                        {/* <div className='mt-2 ml-2 flex items-center border-2 rounded-md border-gray-100 shadow-sm'>
                             <div className='flex-shrink-0 w-10 h-10 flex items-center justify-center text-center font-semibold text-blue-50 bg-blue-700 rounded-full'>
                                 OB
                             </div>
                             <div className='ml-4'>
-                                <h1 className='font-semibold text-md'>Oussama Ben Hassen</h1>
+                                <h1 className='font-semibold text-md'>{project.owner.name}</h1>
                                 <h1>Team Leader</h1>
                             </div>
-                        </div>
-                        <div className='mt-2 ml-2 flex items-center border-2 rounded-md border-gray-100 shadow-sm'>
-                            <div className='flex-shrink-0 w-10 h-10 flex items-center justify-center text-center font-semibold text-blue-50 bg-blue-700 rounded-full'>
-                                OB
+                        </div> */}
+                        {members.map((member)=>
+                            <div className='mt-2 ml-2 flex items-center border-2 rounded-md border-gray-100 shadow-sm'>
+                                <div className='flex-shrink-0 w-10 h-10 flex items-center justify-center text-center font-semibold text-blue-50 bg-blue-700 rounded-full'>
+                                    OB
+                                </div>
+                                <div className='ml-4'>
+                                    <h1 className='font-semibold text-md'>{member.user.name}</h1>
+                                    <h1>{member.role}</h1>
+                                </div>
                             </div>
-                            <div className='ml-4'>
-                                <h1 className='font-semibold text-md'>Oussama Ben Hassen</h1>
-                                <h1>Team Leader</h1>
-                            </div>
-                        </div>
-                        <div className='mt-2 ml-2 flex items-center border-2 rounded-md border-gray-100 shadow-sm'>
-                            <div className='flex-shrink-0 w-10 h-10 flex items-center justify-center text-center font-semibold text-blue-50 bg-blue-700 rounded-full'>
-                                OB
-                            </div>
-                            <div className='ml-4'>
-                                <h1 className='font-semibold text-md'>Oussama Ben Hassen</h1>
-                                <h1>Team Leader</h1>
-                            </div>
-                        </div>
-                        <div className='mt-2 ml-2 flex items-center border-2 rounded-md border-gray-100 shadow-sm'>
-                            <div className='flex-shrink-0 w-10 h-10 flex items-center justify-center text-center font-semibold text-blue-50 bg-blue-700 rounded-full'>
-                                OB
-                            </div>
-                            <div className='ml-4'>
-                                <h1 className='font-semibold text-md'>Oussama Ben Hassen</h1>
-                                <h1>Team Leader</h1>
-                            </div>
-                        </div>
-                        <div className='mt-2 ml-2 flex items-center border-2 rounded-md border-gray-100 shadow-sm'>
-                            <div className='flex-shrink-0 w-10 h-10 flex items-center justify-center text-center font-semibold text-blue-50 bg-blue-700 rounded-full'>
-                                OB
-                            </div>
-                            <div className='ml-4'>
-                                <h1 className='font-semibold text-md'>Oussama Ben Hassen</h1>
-                                <h1>Team Leader</h1>
-                            </div>
-                        </div>
-                        <div className='mt-2 ml-2 flex items-center border-2 rounded-md border-gray-100 shadow-sm'>
-                            <div className='flex-shrink-0 w-10 h-10 flex items-center justify-center text-center font-semibold text-blue-50 bg-blue-700 rounded-full'>
-                                OB
-                            </div>
-                            <div className='ml-4'>
-                                <h1 className='font-semibold text-md'>Oussama Ben Hassen</h1>
-                                <h1>Team Leader</h1>
-                            </div>
-                        </div>
+                        )}
+                        
+                        
                     </div>
 
 

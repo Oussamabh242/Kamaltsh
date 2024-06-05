@@ -48,3 +48,4 @@ from users
 join member on users.user_id = member.user_id 
 join projects on member.project_id = projects.project_id 
 where users.user_id = 3
+
