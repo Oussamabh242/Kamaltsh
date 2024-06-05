@@ -66,12 +66,12 @@ export default function ProjectGrid(props){
             <div className="bg-slate-200 p-4 font-bold flex justify-center items-center text-center"> <div>Done</div><GoCheck style={{ color: "green", marginLeft: "10px", fontSize: "24px" }}/></div>
 
             {data.projects.map((project)=>
-                <Link to={`/project/${project.project_id}`} className="h-48 bg-slate-200 p-4 flex flex-col  shadow-xl  rounded-xl">
+                <Link key={project.project_id} to={`/project/${project.project_id}`} className="h-48 bg-slate-200 p-4 flex flex-col  shadow-xl  rounded-xl">
 
                 <div>
                     {project.project_name}
                 </div>
-                <div>
+                <div> 
                     {project.priority}
                 </div>
                 <div>

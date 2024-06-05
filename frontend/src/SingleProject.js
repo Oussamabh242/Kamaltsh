@@ -24,7 +24,8 @@ const GET_PROJECT = gql`query Project($projectId: ID!) {
       created_at
       members {
         user {
-          name
+          name,
+          user_id
         }
         role
       }
@@ -62,10 +63,7 @@ const SingleProject = () => {
       if (error) return `Error ${error}` ;
       const project = data.project ; 
       const members= project.members ; 
-      members.map((member)=>{
-        console.log(member.user.name) ; 
-      })
-    
+
     const customStyles = {
         content: {
           top: '50%',
@@ -171,7 +169,7 @@ const SingleProject = () => {
                             </div>
                         </div> */}
                         {members.map((member)=>
-                            <div className='mt-2 ml-2 flex items-center border-2 rounded-md border-gray-100 shadow-sm'>
+                            <div key={member.user.user_id} className='mt-2 ml-2 flex items-center border-2 rounded-md border-gray-100 shadow-sm'>
                                 <div className='flex-shrink-0 w-10 h-10 flex items-center justify-center text-center font-semibold text-blue-50 bg-blue-700 rounded-full'>
                                     OB
                                 </div>

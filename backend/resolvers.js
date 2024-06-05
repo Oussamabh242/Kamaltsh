@@ -139,7 +139,7 @@ export const resolvers = {
                     const token = jwt.sign({user_id : res.rows[0].user_id} ,"oussama.bh" , { expiresIn: '50h' });
                     return token ; 
                 }
-                return "get the hell outaa here" ; 
+                return "Wrong credetial" ; 
             })
             .catch(err => {throw(err)});
         }
