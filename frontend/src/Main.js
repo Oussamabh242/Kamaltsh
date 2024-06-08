@@ -42,7 +42,7 @@ export default function Main(){
 
       <div className="mainpage flex flex-row font-mono ">
 
-        <div className="w-1/5 hidden sm:block"><Sidebar  /></div>
+        <div className="w-1/5 hidden sm:block"><Sidebar projects={["vv"]} /></div>
         <div className="w-full sm:w-4/5 flex-grow  bg-slate-100" >
             <div className="flex flex-row justify-between my-5 mx-3">
               <div className="font-Play font-bold text-xl">Projects</div>

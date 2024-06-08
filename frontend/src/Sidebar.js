@@ -1,20 +1,22 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
+export default function Sidebar(props){
 
-export default function Sidebar(){
-
-
+    console.log(props.projects) ; 
     return(
         <div className="w-1/5 bg-slate-200 h-screen pl-3 pt-3 fixed ">
             
             <div className="font-mono  p-0 ">
                 <div className="font-extrabold">Projects {'>'} </div> 
-                <ul className="projectlist pl-2">
-                    <li >porject 1</li>
-                    <li>porject 2</li>
-                    <li>porject 3</li>
-                    <li>porject 4</li>
-                    <li>porject 5</li>
+                <ul className="projectlist pl-2 flex flex-col">
+                    {props.projects.map((project)=>
+                        <Link to="/project/8">{project}</Link>
+                    )
+
+                    }
+                    
+                    
                 </ul>
             </div>
 

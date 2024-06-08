@@ -19,7 +19,12 @@ const reDate = (num)=>{
     return string ; 
 }
 
+
+
 const GET_PROJECT = gql`query Project($projectId: ID!) {
+  projects {
+    project_name ,  
+  },
     project(project_id: $projectId) {
       created_at
       members {
@@ -30,7 +35,7 @@ const GET_PROJECT = gql`query Project($projectId: ID!) {
         role
       }
       owner {
-        name
+        name, 
       }
       priority
       project_name
@@ -59,11 +64,19 @@ const SingleProject = () => {
             headers: {"x-auth-token" : localStorage.getItem("jwt")}
         }
       }); 
+      
+
+
       if (loading) return null ;
       if (error) return `Error ${error}` ;
       const project = data.project ; 
       const members= project.members ; 
+      let projects = []
+      for(let i = 0 ; i<data.projects.length ; i++){
+        projects.push((data.projects[i]).project_name) ;
+      }
 
+      
     const customStyles = {
         content: {
           top: '50%',
@@ -88,7 +101,7 @@ const SingleProject = () => {
         <div className="flex flex-row h-screen">
 
             <div className="w-1/5 hidden sm:block">
-                <Sidebar />
+                <Sidebar  projects ={projects}/>
             </div>
 
             <div className="mainProject font-mono bg-slate-100 flex-grow p-4">
